@@ -10,12 +10,40 @@ class Genetic:
     @staticmethod
     def gen(solution, instance, population=100, mutationRate = 0.015,
             tournamentSize = 5, elitism = True):
-        pass
+
+    def evolve(population, instance):
+        newPopulation = Population(instance, population.size, False)
+
+        elitismN = 0
+        if elitism:
+            newPopulation.tour[0] = population.getBest()
+            elitismN = 1
+
+        for i in range(elitismN, newPopulation.size):
+            parent1 = TSelection(population)
+            parent2 = TSelection(population)
+
+            newPopulation.tour[i] =  cross(parent1, parent2)
+
+        for i in range(elitismN, newPopulation.size):
+            mutate(newPopulation.tour[i])
+
+        return newPopulation
+
+    def crossover(parent1, parent2, instance):
+        child = Tour(instance)
 
 
 class Population:
 
-    def __init__(self, size, shouldInitialize):
+    def __init__(self, instance, size, shouldInitialize):
+        self.instance = instance
+        self.size = size
+        self.shouldInitialize = shouldInitialize
+        self.tours = Tour(self.instance)
+        if shouldInitialize:
+            for i in range(0, self.size):
+                self.tours[i] = Tour(self.instance).generateIndividual()
 
     def getBest(self):
         best = self.tours[0]
