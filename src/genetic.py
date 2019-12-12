@@ -106,6 +106,9 @@ class Tour:
 
         return total_length
 
-    #TODO
-    def containsNode(self):
-        pass
+    #TODO check if it's right
+    def containsNode(self, node):
+        for i in range(0, len(self.solution)):
+            if self.solution[i] == node:
+                return True
+        return False
