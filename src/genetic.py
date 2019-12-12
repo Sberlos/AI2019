@@ -1,4 +1,5 @@
 import numpy as np
+import random
 import os
 if 'AI' in os.getcwd():
     from src.utils import *
@@ -20,6 +21,8 @@ class Genetic:
             elitismN = 1
 
         for i in range(elitismN, newPopulation.size):
+            # look if we want TSelection as function or Population method
+            # TODO implement TSelection
             parent1 = TSelection(population)
             parent2 = TSelection(population)
 
@@ -33,6 +36,28 @@ class Genetic:
     def crossover(parent1, parent2, instance):
         child = Tour(instance)
 
+        startPos = random.randrange(0, len(parent1.solution))
+        endPos = random.randrange(0, len(parent1.solution))
+
+        for i in range(0, len(child.solution)):
+            if startPos < endPos and i > startPos and i < endPos:
+                child.solution[i] = parent1.solution[i]
+            elif startPos > endPos:
+                if not (i < startPos && i > endPos):
+                    child.solution[i] = parent1.solution[i]
+
+        for i in range(0, len(parent2.solution)):
+            # super bottleneck in my opinion, in conjunction with the search
+            # for the first available slot
+            if not child.containsNode(parent2.solution[i]):
+                for j in range(0, len(child.solution)):
+                    # this assumes fixex arrays created with None as in Java/C
+                    # TODO find solution (initialize or other)
+                    if child.solution[j] == None:
+                        child.solution[j] = parent2.solution[i]
+                        break
+
+        return child
 
 class Population:
 
@@ -80,3 +105,7 @@ class Tour:
             from_node = node
 
         return total_length
+
+    #TODO
+    def containsNode(self):
+        pass
