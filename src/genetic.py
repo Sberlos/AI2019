@@ -9,10 +9,17 @@ else:
 class Genetic:
 
     @staticmethod
-    def gen(solution, instance, population=100, mutationRate = 0.015,
+    def gen(solution, instance, populationSize=100, mutationRate = 0.015,
             tournamentSize = 5, elitism = True):
+        pop = Population(instance, populationSize, True)
 
-    def evolve(population, instance):
+        for i in range(0, 100):
+            pop = evolve(pop, instance, mutationRate)
+
+        return pop.getBest()
+
+    @staticmethod
+    def evolve(population, instance, mutationRate):
         newPopulation = Population(instance, population.size, False)
 
         elitismN = 0
@@ -22,19 +29,21 @@ class Genetic:
 
         for i in range(elitismN, newPopulation.size):
             # look if we want TSelection as function or Population method
-            # TODO implement TSelection
             parent1 = TSelection(population)
             parent2 = TSelection(population)
 
             newPopulation.tour[i] =  cross(parent1, parent2)
 
         for i in range(elitismN, newPopulation.size):
-            mutate(newPopulation.tour[i])
+            mutate(newPopulation.tour[i], mutationRate)
 
         return newPopulation
 
+    @staticmethod
     def crossover(parent1, parent2, instance):
         child = Tour(instance)
+        for i in range(0, len(parent1.solution)):
+            child.solution.append(None)
 
         startPos = random.randrange(0, len(parent1.solution))
         endPos = random.randrange(0, len(parent1.solution))
@@ -59,13 +68,31 @@ class Genetic:
 
         return child
 
+    @staticmethod
+    def mutate(individual, mutationRate):
+        for city1 in range(0, len(individual.solution)):
+            if (random.random() < mutationRate):
+                city2 = random.randrange(0, len(individual.solution))
+                individual.solution[city1], individual.solution[city2] = individual.solution[city2], individual.solution[city1]
+
+    @staticmethod
+    def TSelection(instance, population):
+        tournament = Population(instance, population.size, False)
+        for i in range(0, population.size):
+            tournament.tours.append(population.tours[random.randrange(0,
+                population.size)])
+        
+        return tournament.getBest()
+        
+
 class Population:
 
     def __init__(self, instance, size, shouldInitialize):
         self.instance = instance
         self.size = size
         self.shouldInitialize = shouldInitialize
-        self.tours = Tour(self.instance)
+        #self.tours = Tour(self.instance)
+        self.tours = []
         if shouldInitialize:
             for i in range(0, self.size):
                 self.tours[i] = Tour(self.instance).generateIndividual()
@@ -73,8 +100,8 @@ class Population:
     def getBest(self):
         best = self.tours[0]
         for i in range(1, self.size):
-            if best.getFitness() < tours[i].getFitness():
-                best = tours[i]
+            if best.getFitness() < self.tours[i].getFitness():
+                best = self.tours[i]
         return best
 
 
@@ -88,7 +115,11 @@ class Tour:
 
     def generateIndividual(self):
         #is this the correct/efficent way of doing it?
-        self.solution = random_initialier.random_method(self.instance)
+        #self.solution = random_initialier.random_method(self.instance)
+
+        #let's try with nearest neighbour
+        self.solution = nearest_neighbor.nn(self.instance, random.randrange(0,
+            self.instance.nPoints)
 
     def getFitness(self):
         if self.fitness == 0:
@@ -106,7 +137,6 @@ class Tour:
 
         return total_length
 
-    #TODO check if it's right
     def containsNode(self, node):
         for i in range(0, len(self.solution)):
             if self.solution[i] == node:

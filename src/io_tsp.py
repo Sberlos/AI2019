@@ -1,6 +1,6 @@
 import numpy as np
 from typing import List
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 from numpy.core._multiarray_umath import ndarray
 
 
@@ -55,6 +55,7 @@ class Instance:
         print('nPoints: ' + str(self.nPoints))
         print('best_sol: ' + str(self.best_sol))
 
+    """
     def plot_data(self):
         plt.figure(figsize=(8, 8))
         plt.title(self.name)
@@ -62,6 +63,7 @@ class Instance:
         for i, txt in enumerate(np.arange(self.nPoints)):  # tour_found[:-1]
             plt.annotate(txt, (self.points[i, 1], self.points[i, 2]))
         plt.show()
+    """
 
     @staticmethod
     def distance_euc(zi, zj):

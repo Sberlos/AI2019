@@ -2,7 +2,7 @@ from numpy.core._multiarray_umath import ndarray
 import os
 from time import time as t
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 if 'AI' in os.getcwd():
     from src import *
 else:
@@ -21,7 +21,8 @@ class Solver_TSP:
 
     available_improvements = {"2-opt": TwoOpt.loop2opt,
                               "2.5-opt": TwoDotFiveOpt.loop2dot5opt,
-                              "simulated_annealing": Simulated_Annealing.sa}
+                              "simulated_annealing": Simulated_Annealing.sa,
+                              "genetic": Genetic.gen}
 
     # ,
     #   "simulated_annealing": Simulated_Annealing,
@@ -73,6 +74,7 @@ class Solver_TSP:
         if return_value:
             return self.solution
 
+    """
     def plot_solution(self):
         assert self.solved, "You can't plot the solution, you need to solve it first!"
         plt.figure(figsize=(8, 8))
@@ -81,6 +83,7 @@ class Solver_TSP:
         ordered_points = self.instance.points[self.solution]
         plt.plot(ordered_points[:, 1], ordered_points[:, 2], 'b-')
         plt.show()
+        """
 
     def check_if_solution_is_valid(self, solution):
         rights_values = np.sum([self.check_validation(i, solution[:-1]) for i in np.arange(self.instance.nPoints)])
