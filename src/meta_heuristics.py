@@ -27,6 +27,7 @@ class Simulated_Annealing:
                     current_len += delta_E
                     if current_len < best_len:
                         best_sol = current_sol
+                        best_len = current_len
                 else:
                     r = np.random.uniform(0, 1)
                     if r < np.exp(- delta_E / temperature):

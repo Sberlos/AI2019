@@ -1,4 +1,5 @@
 from src import *
+import src.genetic
 import pandas as pd
 
 

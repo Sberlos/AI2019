@@ -8,6 +8,7 @@ if 'AI' in os.getcwd():
 else:
     from AI2019.src import *
 
+from src.genetic import *
 
 class Solver_TSP:
 

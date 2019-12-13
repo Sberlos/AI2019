@@ -6,6 +6,8 @@ if 'AI' in os.getcwd():
 else:
     from AI2019.src.utils import *
 
+from src.constructive_algorithms import *
+
 class Genetic:
 
     @staticmethod
@@ -13,37 +15,42 @@ class Genetic:
             tournamentSize = 5, elitism = True):
         pop = Population(instance, populationSize, True)
 
+        # TODO after initial testing chenge to time based and not 100 runs
         for i in range(0, 100):
-            pop = evolve(pop, instance, mutationRate)
+            pop = Genetic.evolve(pop, instance, mutationRate, elitism)
 
         return pop.getBest()
 
     @staticmethod
-    def evolve(population, instance, mutationRate):
+    def evolve(population, instance, mutationRate, elitism):
         newPopulation = Population(instance, population.size, False)
 
         elitismN = 0
         if elitism:
-            newPopulation.tour[0] = population.getBest()
+            newPopulation.tours.append(population.getBest())
             elitismN = 1
 
         for i in range(elitismN, newPopulation.size):
             # look if we want TSelection as function or Population method
-            parent1 = TSelection(population)
-            parent2 = TSelection(population)
+            parent1 = Genetic.TSelection(instance, population)
+            parent2 = Genetic.TSelection(instance, population)
 
-            newPopulation.tour[i] =  cross(parent1, parent2)
+            newPopulation.tours.append(Genetic.crossover(parent1, parent2,
+                    instance))
 
         for i in range(elitismN, newPopulation.size):
-            mutate(newPopulation.tour[i], mutationRate)
+            Genetic.mutate(newPopulation.tours[i], mutationRate)
 
         return newPopulation
 
     @staticmethod
     def crossover(parent1, parent2, instance):
         child = Tour(instance)
+        tempSol = []
         for i in range(0, len(parent1.solution)):
-            child.solution.append(None)
+            #child.solution.append(None)
+            tempSol.append(None)
+        child.solution = np.array(tempSol)
 
         startPos = random.randrange(0, len(parent1.solution))
         endPos = random.randrange(0, len(parent1.solution))
@@ -52,7 +59,7 @@ class Genetic:
             if startPos < endPos and i > startPos and i < endPos:
                 child.solution[i] = parent1.solution[i]
             elif startPos > endPos:
-                if not (i < startPos && i > endPos):
+                if not (i < startPos and i > endPos):
                     child.solution[i] = parent1.solution[i]
 
         for i in range(0, len(parent2.solution)):
@@ -66,7 +73,9 @@ class Genetic:
                         child.solution[j] = parent2.solution[i]
                         break
 
-        return child
+        #print(child)
+        #print(child.solution)
+        return child.solution
 
     @staticmethod
     def mutate(individual, mutationRate):
@@ -95,7 +104,10 @@ class Population:
         self.tours = []
         if shouldInitialize:
             for i in range(0, self.size):
-                self.tours[i] = Tour(self.instance).generateIndividual()
+                #self.tours[i] = Tour(self.instance).generateIndividual()
+                #self.tours.append(Tour(self.instance).generateIndividual())
+                #print(self.tours[i].solution)
+                self.tours.append(Tour(self.instance))
 
     def getBest(self):
         best = self.tours[0]
@@ -111,7 +123,9 @@ class Tour:
         self.fitness = 0
         self.distance = 0
         self.instance = instance
-        self.solution = None
+        #self.solution = None
+        self.solution = nearest_neighbor.nn(self.instance, random.randrange(0,
+            self.instance.nPoints))
 
     def generateIndividual(self):
         #is this the correct/efficent way of doing it?
@@ -119,7 +133,7 @@ class Tour:
 
         #let's try with nearest neighbour
         self.solution = nearest_neighbor.nn(self.instance, random.randrange(0,
-            self.instance.nPoints)
+            self.instance.nPoints))
 
     def getFitness(self):
         if self.fitness == 0:
