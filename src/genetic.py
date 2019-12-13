@@ -7,20 +7,25 @@ else:
     from AI2019.src.utils import *
 
 from src.constructive_algorithms import *
+from src.local_search import *
 
 class Genetic:
 
     @staticmethod
-    def gen(solution, instance, populationSize=100, mutationRate = 0.015,
+    def gen(solution, instance, populationSize=30, mutationRate = 0.005,
             tournamentSize = 5, elitism = True):
         pop = Population(instance, populationSize, True)
 
         # TODO after initial testing chenge to time based and not 100 runs
-        for i in range(0, 100):
-            print(i) #crasha con i = 1
+        for i in range(0, 4):
             pop = Genetic.evolve(pop, instance, mutationRate, elitism)
 
-        return pop.getBest().solution
+        best = pop.getBest().solution
+        #improved = TwoOpt.loop2opt(best, instance)
+        sol = np.append(best, best[0])
+        improved = TwoOpt.loop2opt(sol, instance)
+        #improved2 = TwoDotFiveOpt.loop2dot5opt(sol, instance)
+        return improved
 
     @staticmethod
     def evolve(population, instance, mutationRate, elitism):
@@ -28,19 +33,26 @@ class Genetic:
 
         elitismN = 0
         if elitism:
-            newPopulation.tours.append(population.getBest())
+            best = population.getBest()
+            improved = TwoOpt.loop2opt(best.solution, instance)
+            best.solution = improved
+            newPopulation.tours.append(best)
+            #newPopulation.tours.append(population.getBest())
             elitismN = 1
 
         for i in range(elitismN, newPopulation.size):
             # look if we want TSelection as function or Population method
             parent1 = Genetic.TSelection(instance, population)
             parent2 = Genetic.TSelection(instance, population)
+            #parent1.solution = TwoOpt.loop2opt(parent1.solution, instance)
+            #parent2.solution = TwoOpt.loop2opt(parent2.solution, instance)
 
             newPopulation.tours.append(Genetic.crossover(parent1, parent2,
                     instance))
 
         for i in range(elitismN, newPopulation.size):
             Genetic.mutate(newPopulation.tours[i], mutationRate)
+            #newPopulation.tours[i].solution = TwoOpt.loop2opt(newPopulation.tours[i].solution, instance)
 
         return newPopulation
 
@@ -48,13 +60,14 @@ class Genetic:
     def crossover(parent1, parent2, instance):
         child = Tour(instance)
         tempSol = []
-        for i in range(0, len(parent1.solution)):
+        lenPar1Sol = len(parent1.solution)
+        for i in range(0, lenPar1Sol):
             #child.solution.append(None)
             tempSol.append(None)
         child.solution = np.array(tempSol)
 
-        startPos = random.randrange(0, len(parent1.solution))
-        endPos = random.randrange(0, len(parent1.solution))
+        startPos = random.randrange(0, lenPar1Sol)
+        endPos = random.randrange(0, lenPar1Sol)
 
         for i in range(0, len(child.solution)):
             if startPos < endPos and i > startPos and i < endPos:
@@ -73,32 +86,19 @@ class Genetic:
                     if child.solution[j] == None:
                         child.solution[j] = parent2.solution[i]
                         break
-
-        #print(child)
-        #print(child.solution)
-        
-        #This makes things "work" but it's wrong
-        #return child.solution
-
         return child
 
     @staticmethod
     def mutate(individual, mutationRate):
         for city1 in range(0, len(individual.solution)):
             if (random.random() < mutationRate):
+                #print("X")
                 city2 = random.randrange(0, len(individual.solution))
                 individual.solution[city1], individual.solution[city2] = individual.solution[city2], individual.solution[city1]
-        """
-        #this "works" but it's wrong (it failes on other places)
-        for city1 in range(0, len(individual)):
-            if (random.random() < mutationRate):
-                city2 = random.randrange(0, len(individual))
-                individual[city1], individual[city2] = individual[city2], individual[city1]
-        """
 
     @staticmethod
     def TSelection(instance, population):
-        tournament = Population(instance, population.size, False)
+        tournament = Population(instance, 5, False)
         for i in range(0, population.size):
             tournament.tours.append(population.tours[random.randrange(0,
                 population.size)])
@@ -122,20 +122,14 @@ class Population:
                 self.tours.append(Tour(self.instance))
 
     def getBest(self):
-        #print(self.size)
-        """
-        for j in range(0, self.size):
-            #print(j)
-            #print(self.tours[j])
-        """
-
         best = self.tours[0]
-        #print(best)
+        bestF = best.getFitness()
         for i in range(1, self.size):
             #print(self.tours[i].solution)
             #print(self.tours[i].getFitness())
-            if best.getFitness() < self.tours[i].getFitness():
+            if bestF < self.tours[i].getFitness():
                 best = self.tours[i]
+                bestF = best.getFitness()
         return best
 
 
@@ -147,7 +141,9 @@ class Tour:
         self.instance = instance
         #self.solution = None
         self.solution = nearest_neighbor.nn(self.instance, random.randrange(0,
-            self.instance.nPoints))
+            self.instance.nPoints))[:-1]
+        #print("len of solution at Tour initialization: {}".format(len(self.solution)))
+        #print("solution at Tour initialization: {}".format(self.solution))
 
     def generateIndividual(self):
         #is this the correct/efficent way of doing it?

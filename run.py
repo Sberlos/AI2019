@@ -1,5 +1,4 @@
 from src import *
-import src.genetic
 import pandas as pd
 
 
@@ -22,7 +21,7 @@ def add(solver, instance, improve, index, results, name, verbose, show_plots):
 
 def run(show_plots=False, verbose=False):
     # names = [name_ for name_ in os.listdir("./problems") if "tsp" in name_]
-    names = ["eil76.tsp"]
+    names = ["ch130.tsp"]
     initializers = Solver_TSP.available_initializers.keys()
     improvements = Solver_TSP.available_improvements.keys()
     results = []
