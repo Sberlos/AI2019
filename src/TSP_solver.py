@@ -15,14 +15,14 @@ class Solver_TSP:
     solution: ndarray
     found_length: float
     available_initializers = {"random": random_initialier.random_method,
-                              "nearest_neighbors": nearest_neighbor.nn,
-                              "best_nn": nearest_neighbor.best_nn,
-                              "multi_fragment": multi_fragment.mf
+                              #"nearest_neighbors": nearest_neighbor.nn,
+                              #"best_nn": nearest_neighbor.best_nn,
+                              #"multi_fragment": multi_fragment.mf
                               }
 
-    available_improvements = {"2-opt": TwoOpt.loop2opt,
-                              "2.5-opt": TwoDotFiveOpt.loop2dot5opt,
-                              "simulated_annealing": Simulated_Annealing.sa,
+    available_improvements = {#"2-opt": TwoOpt.loop2opt,
+                              #"2.5-opt": TwoDotFiveOpt.loop2dot5opt,
+                              #"simulated_annealing": Simulated_Annealing.sa,
                               "genetic": Genetic.gen}
 
     # ,
@@ -66,7 +66,7 @@ class Solver_TSP:
         self.evaluate_solution()
         self._gap()
         if verbose:
-            print(f"###  solution found with {self.gap} % gap  in {self.time_to_solve} seconds ####")
+            print(f"###  solution found with {self.gap} % gap in {self.time_to_solve} seconds ####")
             print(f"the total length for the solution found is {self.found_length}",
                   f"while the optimal length is {self.instance.best_sol}",
                   f"the gap is {self.gap}%",
