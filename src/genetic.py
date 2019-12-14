@@ -12,12 +12,13 @@ from src.local_search import *
 class Genetic:
 
     @staticmethod
-    def gen(solution, instance, populationSize=30, mutationRate = 0.005,
+    def gen(solution, instance, populationSize=30, mutationRate = 0.015,
             tournamentSize = 5, elitism = True):
         pop = Population(instance, populationSize, True)
 
         # TODO after initial testing chenge to time based and not 100 runs
-        for i in range(0, 4):
+        for i in range(0, 135):
+            print(pop.getBest().getFitness())
             pop = Genetic.evolve(pop, instance, mutationRate, elitism)
 
         best = pop.getBest().solution
@@ -50,9 +51,11 @@ class Genetic:
             newPopulation.tours.append(Genetic.crossover(parent1, parent2,
                     instance))
 
+        """
         for i in range(elitismN, newPopulation.size):
             Genetic.mutate(newPopulation.tours[i], mutationRate)
             #newPopulation.tours[i].solution = TwoOpt.loop2opt(newPopulation.tours[i].solution, instance)
+        """
 
         return newPopulation
 
@@ -87,6 +90,39 @@ class Genetic:
                         child.solution[j] = parent2.solution[i]
                         break
         return child
+
+    def crossover2(parent1, parent2, instance):
+        child = Tour(instance)
+        tempSol = []
+        lenPar1Sol = len(parent1.solution)
+        for i in range(0, lenPar1Sol):
+            #child.solution.append(None)
+            tempSol.append(None)
+        child.solution = np.array(tempSol)
+
+        nP1 = parent1.solution[0]
+        index = None
+        for i in range(0, lenPar1Sol):
+            if parent2.solution[i] == nP1:
+                index = i
+                break
+
+        distP1 = valueDist(nP1, parent1.solution[1])
+        distP2 = valueDist(parent2.solution[index], parent2.solution[(index +
+            1) % lenPar1Sol])
+
+        choice = None
+        if distP1 < distP2:
+            choice = parent1.solution[1]
+        else:
+            choice = parent2.solution[(index + 1) % lenPar1Sol]
+
+        # TODO
+        # add choice
+        # add rest
+        # chose if we want to use the modulo or shift everything in the
+        # numeration in order to have both start from the first node
+        # (I think it's still a modulo or something)
 
     @staticmethod
     def mutate(individual, mutationRate):
@@ -163,16 +199,17 @@ class Tour:
     def evaluate_sol(self):
         #print("tour.solution: {}".format(self.solution)) #this is right
         total_length = 0
+        solutionT = np.append(self.solution, self.solution[0])
 
-        starting_node = self.solution[0]
+        starting_node = solutionT[0]
         index = 1
         while starting_node == None:
-            starting_node = self.solution[index]
+            starting_node = solutionT[index]
             index += 1
 
         #print("starting_node: {}".format(starting_node))
         from_node = starting_node
-        for node in self.solution[1:]:
+        for node in solutionT[1:]:
             if node != None:
                 #print("node: {}".format(node))
                 total_length += self.instance.dist_matrix[from_node, node]
