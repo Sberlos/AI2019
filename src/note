@@ -1,0 +1,8 @@
+soft max per il sampling (pesa meno i migliori)
+o usare f/sum(f(x)) per il sampling (scipy.special.softmax)
+
+max iteration piccole basate sul gain?
+modificare il two opt per provare a testare il gain e fermarsi
+
+bridge e 2.5 random e scegliere quale shift fare
+fare 2.5 nello swap del random e poi 2opt

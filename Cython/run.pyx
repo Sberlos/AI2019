@@ -11,7 +11,7 @@ def add(solver, instance, improve, index, results, name, verbose, show_plots):
         print(f"the total length for the solution found is {solver.found_length}",
               f"while the optimal length is {instance.best_sol}",
               f"the gap is {solver.gap}%",
-              f"the solution is found in {solver.time_to_solve} seconds", sep="\n")
+              f"the solution is found in {solver.time_to_solve} seconds\n")
 
     index.append((name, solver.name_method))
     results.append([solver.found_length, instance.best_sol, solver.gap, solver.time_to_solve])
@@ -74,6 +74,7 @@ def run(name, show_plots=False, verbose=False):
         instance.plot_data()
 
     solver = Solver_TSP("nearest_neighbors")
+    #solver = Solver_TSP("multi_fragment")
     add(solver, instance, "iterated_local_search", index, results, name, verbose, show_plots)
     solver.pop()
     solver.pop()

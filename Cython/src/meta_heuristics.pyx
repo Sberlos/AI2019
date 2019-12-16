@@ -86,12 +86,13 @@ class Iterated_Local_Search:
         start = t()
         temperature = instance.best_sol / np.sqrt(instance.nPoints)
         current_sol = np.array(solution)
-        current_sol = TwoOpt.loop2opt(current_sol, instance)
+        #current_sol = solution
+        current_sol, gainT = TwoOpt.loop2opt(current_sol, instance)
+        print(t() - start)
         current_len = compute_lenght(current_sol, instance.dist_matrix)
         best_sol = current_sol
         best_len = current_len
-        while temperature > 0.001 and t() - start < 150:
-            #print(temperature)
+        while temperature > 0.0001 and t() - start < 150:
             for i in range(iterations_for_each_temp):
                 if t() - start > 150:
                     break
@@ -100,14 +101,21 @@ class Iterated_Local_Search:
                 mutated_sol = Iterated_Local_Search.double_bridge(current_sol)
                 #opt_sol = mutated_sol
                 #mend = t()
-                opt_sol = TwoOpt.loop2opt(mutated_sol, instance)
+
+                opt_sol, gain = TwoOpt.loop2opt(mutated_sol, instance)
+                #opt_sol = TwoDotFiveOpt.loop2dot5opt(mutated_sol, instance)
+
+                #print(gain)
                 #opt_sol = TwoDotFiveOpt.loop2dot5opt(mutated_sol, instance, 3)
-                #optEnd = t()
+                optEnd = t()
                 #print(mend - mstart, optEnd - mend)
+                #print(optEnd - mend)
                 #delta_E = Iterated_Local_Search.evaluate_sol(opt_sol, instance) - best_len
+                #tDel = t()
                 delta_E = compute_lenght(opt_sol, instance.dist_matrix) - best_len
+                #print(t() - tDel)
+                #print(delta_E)
                 if delta_E < 0:
-                    #print("Improvement")
                     current_sol = opt_sol
                     current_len += delta_E
                     if current_len < best_len:
@@ -153,11 +161,14 @@ class Iterated_Local_Search:
         pos1 = 1 + random.randrange(0, round(len(solution) / 4))
         pos2 = pos1 + random.randrange(0, round(len(solution) / 4))
         pos3 = pos2 + random.randrange(0, round(len(solution) / 4))
-        #t = solution[:pos1] + solution[pos3:]
+        """
         p1 = np.concatenate((solution[:pos1],solution[pos3:]))
         p2 = np.concatenate((solution[pos2:pos3], solution[pos1:pos2]))
         res = np.concatenate((p1, p2))
-        #print(res)
-        resA = np.append(res, res[0])
-        #print(resA)
-        return resA
+        """
+        p1 = solution[:pos1] + solution[pos3:]
+        p2 = solution[pos2:pos3] + solution[pos1:pos2]
+        res = p1 + p2
+        #resA = np.append(res, res[0])
+        res.append(res[0])
+        return res
