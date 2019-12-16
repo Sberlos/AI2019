@@ -15,15 +15,16 @@ class Solver_TSP:
     solution: ndarray
     found_length: float
     available_initializers = {"random": random_initialier.random_method,
-                              #"nearest_neighbors": nearest_neighbor.nn,
+                              "nearest_neighbors": nearest_neighbor.nn,
                               #"best_nn": nearest_neighbor.best_nn,
-                              #"multi_fragment": multi_fragment.mf
+                              "multi_fragment": multi_fragment.mf
                               }
 
     available_improvements = {#"2-opt": TwoOpt.loop2opt,
                               #"2.5-opt": TwoDotFiveOpt.loop2dot5opt,
                               #"simulated_annealing": Simulated_Annealing.sa,
-                              "genetic": Genetic.gen}
+                              "genetic": Genetic.gen,
+                              "iterated_local_search": Iterated_Local_Search.ils}
 
     # ,
     #   "simulated_annealing": Simulated_Annealing,

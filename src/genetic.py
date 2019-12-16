@@ -90,7 +90,7 @@ class Genetic:
             parent2 = Genetic.TSelection(instance, population)
             child = Genetic.crossover3(parent1, parent2, instance)
             childM = Genetic.mutate(child, mutationRate)
-            childM.solution = TwoOpt.loop2opt(childM.solution, instance)
+            childM.solution = TwoOpt.loop2opt(childM.solution, instance, 3)
             newPopulation.tours.append(childM)
 
 
