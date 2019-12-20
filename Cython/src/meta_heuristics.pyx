@@ -82,19 +82,20 @@ class Iterated_Local_Search:
 
     @staticmethod
     def ils(solution, instance, constant_temperature=0.95,
-            iterations_for_each_temp=1):
+            iterations_for_each_temp=10):
         start = t()
         temperature = instance.best_sol / np.sqrt(instance.nPoints)
         current_sol = np.array(solution)
         #current_sol = solution
         current_sol, gainT = TwoOpt.loop2opt(current_sol, instance)
-        print(t() - start)
+        #print(t() - start)
         current_len = compute_lenght(current_sol, instance.dist_matrix)
         best_sol = current_sol
         best_len = current_len
         while temperature > 0.0001 and t() - start < 150:
+            #print(temperature)
             for i in range(iterations_for_each_temp):
-                if t() - start > 150:
+                if t() - start > 150 or current_len == instance.best_sol:
                     break
                 #mutated_sol = Simulated_Annealing.random_sol_from_neig2(current_sol, instance)
                 #mstart = t()

@@ -19,48 +19,6 @@ def add(solver, instance, improve, index, results, name, verbose, show_plots):
     if show_plots:
         solver.plot_solution()
 
-
-"""
-def run(show_plots=False, verbose=False):
-    # names = [name_ for name_ in os.listdir("./problems") if "tsp" in name_]
-    names = ["rat783.tsp"]
-    initializers = Solver_TSP.available_initializers.keys()
-    improvements = Solver_TSP.available_improvements.keys()
-    results = []
-    index = []
-    for name in names:
-        filename = f"problems/{name}"
-        instance = Instance(filename)
-        if verbose:
-            print("\n\n#############################")
-            instance.print_info()
-        if show_plots:
-            instance.plot_data()
-
-        for init in initializers:
-            for improve in improvements:
-                solver = Solver_TSP(init)
-                add(solver, instance, improve, index, results, name, verbose, show_plots)
-                for improve2 in [j for j in improvements if j not in [improve]]:
-                    add(solver, instance, improve2, index, results, name, verbose, show_plots)
-
-                    for improve3 in [j for j in improvements if j not in [improve, improve2]]:
-                        add(solver, instance, improve3, index, results, name, verbose, show_plots)
-                        solver.pop()
-
-                    solver.pop()
-
-
-        if instance.exist_opt and show_plots:
-            solver.solution = np.concatenate([instance.optimal_tour, [instance.optimal_tour[0]]])
-            solver.method = "optimal"
-            solver.plot_solution()
-
-    index = pd.MultiIndex.from_tuples(index, names=['problem', 'method'])
-
-    return pd.DataFrame(results, index=index, columns=["tour length", "optimal solution", "gap", "time to solve"])
-"""
-
 def run(name, show_plots=False, verbose=False):
     results = []
     index = []
@@ -74,8 +32,7 @@ def run(name, show_plots=False, verbose=False):
         instance.plot_data()
 
     solver = Solver_TSP("nearest_neighbors")
-    #solver = Solver_TSP("multi_fragment")
-    add(solver, instance, "iterated_local_search", index, results, name, verbose, show_plots)
+    add(solver, instance, "genetic", index, results, name, verbose, show_plots)
     solver.pop()
     solver.pop()
 

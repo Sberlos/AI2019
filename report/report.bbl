@@ -1,0 +1,65 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ynt/global//global/global}
+    \entry{oluk_2002}{article}{}
+      \name{author}{1}{}{%
+        {{hash=e06eccb006f6c5112450f9eb422b6c3f}{%
+           family={Ü{c{c}}oluk},
+           familyi={Ü\bibinitperiod},
+           given={Göktürk},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {{TSI} Press}%
+      }
+      \strng{namehash}{e06eccb006f6c5112450f9eb422b6c3f}
+      \strng{fullhash}{e06eccb006f6c5112450f9eb422b6c3f}
+      \strng{bibnamehash}{e06eccb006f6c5112450f9eb422b6c3f}
+      \strng{authorbibnamehash}{e06eccb006f6c5112450f9eb422b6c3f}
+      \strng{authornamehash}{e06eccb006f6c5112450f9eb422b6c3f}
+      \strng{authorfullhash}{e06eccb006f6c5112450f9eb422b6c3f}
+      \field{labelalpha}{Ücc02}
+      \field{sortinit}{2}
+      \field{sortinithash}{ed39bb39cf854d5250e95b1c1f94f4ed}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Intelligent Automation {\&} Soft Computing}
+      \field{month}{1}
+      \field{number}{3}
+      \field{title}{Genetic Algorithm Solution of the {TSP} Avoiding Special Crossover and Mutation}
+      \field{volume}{8}
+      \field{year}{2002}
+      \field{pages}{265\bibrangedash 272}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1080/10798587.2000.10642829
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1080/10798587.2000.10642829
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1080/10798587.2000.10642829
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

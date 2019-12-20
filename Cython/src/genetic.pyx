@@ -17,14 +17,14 @@ class Genetic:
         pop = Population(instance, populationSize, True)
 
         # TODO after initial testing chenge to time based and not 100 runs
-        for i in range(0, 10):
+        for i in range(0, 100):
             print(pop.getBest().getFitness())
             pop = Genetic.evolve(pop, instance, mutationRate, elitism)
 
         best = pop.getBest().solution
         #improved = TwoOpt.loop2opt(best, instance)
         sol = np.append(best, best[0])
-        improved = TwoOpt.loop2opt(sol, instance)
+        improved, _ = TwoOpt.loop2opt(sol, instance)
         #improved2 = TwoDotFiveOpt.loop2dot5opt(sol, instance)
         return improved
         #return sol
@@ -47,50 +47,12 @@ class Genetic:
             #newPopulation.tours.append(population.getBest())
             elitismN = 1
 
-        """
-        for i in range(elitismN, newPopulation.size):
-            # look if we want TSelection as function or Population method
-            parent1 = Genetic.TSelection(instance, population)
-            parent2 = Genetic.TSelection(instance, population)
-            #parent1.solution = TwoOpt.loop2opt(parent1.solution, instance)
-            #parent2.solution = TwoOpt.loop2opt(parent2.solution, instance)
-
-            newPopulation.tours.append(Genetic.crossover3(parent1, parent2,
-                    instance))
-            """
-        """
-            child = Genetic.crossover3(parent1, parent2, instance)
-            child.solution = TwoOpt.loop2opt(child.solution, instance)
-            newPopulation.tours.append(child)
-            """
-        """
-
-        for i in range(elitismN, population.size):
-            #Genetic.mutate(newPopulation.tours[i], mutationRate)
-            #print("Fitness before mutation: {}".format(population.tours[i].getFitness()))
-
-            # This is the base one
-            #Genetic.mutate(population.tours[i], mutationRate)
-
-            #print("Fitness after mutation: {}".format(population.tours[i].getFitness()))
-            #newPopulation.tours[i].solution = TwoOpt.loop2opt(newPopulation.tours[i].solution, instance)
-            """
-        """
-            newPopulation.tours.append(Genetic.mutate(population.tours[i],
-                mutationRate))
-            """
-        """
-            newPopulation.tours[i] = Genetic.mutate(newPopulation.tours[i],
-                mutationRate)
-            newPopulation.tours[i].solution = TwoOpt.loop2opt(newPopulation.tours[i].solution, instance)
-        """
-
         for i in range(elitismN, newPopulation.size):
             parent1 = Genetic.TSelection(instance, population)
             parent2 = Genetic.TSelection(instance, population)
             child = Genetic.crossover3(parent1, parent2, instance)
             childM = Genetic.mutate(child, mutationRate)
-            childM.solution = TwoOpt.loop2opt(childM.solution, instance, 3)
+            childM.solution, _ = TwoOpt.loop2opt(childM.solution, instance, 15)
             newPopulation.tours.append(childM)
 
 
@@ -287,6 +249,7 @@ class Tour:
         #print("tour.solution: {}".format(self.solution)) #this is right
         total_length = 0
         solutionT = np.append(self.solution, self.solution[0])
+        #print(len(self.solution))
 
         starting_node = solutionT[0]
         index = 1
