@@ -20,7 +20,7 @@ struct Tour {
     /* se lo tengo come int (usando la differenza di lunghezza tra il migliore 
      * e questo) dovrei guadagnare in performance
      */
-    unsigned fitness;
+    double fitness; //could change to unsigned with some tricks maybe
     unsigned * solution;
 };
 
@@ -101,9 +101,9 @@ struct Tour * crossover(struct Tour * p1, struct Tour * p2, unsigned nCities) {
     }
 
     child->solution = permutation;
-    // let's calculate the fitness already here, I have to do it somewhere
-    // so it doesn't make any difference
-    // TODO I will need the distance matrix...
+    
+    // don't calculate the fitness here as I have to mutate and do local
+    // search afterwards and I would have to recalculate it
     child->fitness = 0;
     return child;
 }
@@ -182,6 +182,14 @@ struct Population * evolve(struct Population * pop, double mutationRate,
 
     // I have to add a loop to free everything that's not in the new
     // generation...
+    // TODO check if it's right
+    for (unsigned i = 0; i < newPopulation->size; ++i) {
+        if (pop->tours[i] != newPopulation->tours[0]) {
+            free((pop->tours[i])->solution);
+            free(pop->tours[i]);
+        }
+    }
+    free(pop);
 
     return newPopulation;
 }
@@ -193,14 +201,19 @@ unsigned * gen(unsigned * solution, unsigned populationSize, double mutationRate
     struct Population * pop = malloc(sizeof(struct Population));
     generatePopulation(pop, instance);
     for (unsigned i = 0; i < generations; ++i) {
-        printf("Migliore: %d", getBest(pop)->fitness);
+        printf("Migliore: %f", getBest(pop)->fitness);
         pop = evolve(pop, mutationRate, elitism, instance);
     }
 
     struct Tour * t = getBest(pop);
+    // TODO free everything here
     return t->solution;
     //return getBest(pop)->solution;
 }
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        return 1;
+    }
+    // TODO call method with argv
 }
