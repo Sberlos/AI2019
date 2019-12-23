@@ -251,7 +251,7 @@ unsigned * createDistMaxtrix(struct Instance * instance, struct City ** cities) 
             if (i == j) {
                 distMatrix[i * nCities + j] = 0;
             } else {
-                distMatrix[i * nCities + j] = 
+                distMatrix[i * nCities + j] =
                     round(sqrt(pow(cities[i]->x - cities[j]->x, 2.0) + 
                                 pow(cities[i]->y - cities[j]->y, 2.0)));
                 distMatrix[j * nCities + i] = distMatrix[i * nCities + j];
@@ -261,17 +261,19 @@ unsigned * createDistMaxtrix(struct Instance * instance, struct City ** cities) 
     return distMatrix;
 }
 
-struct Instance * readProblem(char ** argv) {
+struct Instance * readProblem(char * problem) {
+    printf("here");
     struct Instance * instance = malloc(sizeof(struct Instance));
     if (!instance) {
         return 0;
     }
     char line[50];
     unsigned i = 0;
-    char path[20];
+    char path[25];
     // TODO check if it's the right path
     strcpy(path, "../problems/");
-    strcpy(path, argv[1]);
+    strcpy(path, problem);
+    printf("path: %s", path);
     FILE* file = fopen(path, "r");
     struct City * city = 0;
     struct City ** cities = 0;
@@ -315,14 +317,24 @@ void checksolution(unsigned * sol) {
 }
 
 int main(int argc, char **argv) {
-    printf("%f", pow(2, 3));
     if (argc < 2) {
         return 1;
     }
-    struct Instance * instance = readProblem(argv);
+    printf("%d\n", argc);
+    printf("%s\n", argv[0]);
+    printf("%s\n", argv[1]);
+    char * problem = malloc(sizeof(char) * 10);
+    if (!problem) {
+        return 0;
+    }
+    strcpy(problem, argv[1]); // TODO PROBLEM HERE
+    printf("%s", problem);
+    struct Instance * instance = readProblem(problem);
     unsigned * solution = nearestNeighbour(instance);
+    /*
     solution = gen(solution, 30, 0.015, 5, 1, 10, instance);
     checksolution(solution);
+    */
     free(instance->distMatrix);
     free(instance);
     free(solution);
