@@ -268,7 +268,7 @@ struct Instance * readProblem(char ** argv) {
     }
     char line[50];
     unsigned i = 0;
-    char[20] path;
+    char path[20];
     // TODO check if it's the right path
     strcpy(path, "../problems/");
     strcpy(path, argv[1]);
