@@ -262,7 +262,7 @@ unsigned * createDistMaxtrix(struct Instance * instance, struct City ** cities) 
 }
 
 struct Instance * readProblem(char * problem) {
-    printf("here");
+    printf("here\n");
     struct Instance * instance = malloc(sizeof(struct Instance));
     if (!instance) {
         return 0;
@@ -270,10 +270,12 @@ struct Instance * readProblem(char * problem) {
     char line[50];
     unsigned i = 0;
     char path[25];
+    printf("here2\n");
     // TODO check if it's the right path
+    // TODO here is the problem!!!
     strcpy(path, "../problems/");
     strcpy(path, problem);
-    printf("path: %s", path);
+    printf("path: %s\n", path);
     FILE* file = fopen(path, "r");
     struct City * city = 0;
     struct City ** cities = 0;
@@ -323,13 +325,15 @@ int main(int argc, char **argv) {
     printf("%d\n", argc);
     printf("%s\n", argv[0]);
     printf("%s\n", argv[1]);
+    /*
     char * problem = malloc(sizeof(char) * 10);
     if (!problem) {
         return 0;
     }
     strcpy(problem, argv[1]); // TODO PROBLEM HERE
     printf("%s", problem);
-    struct Instance * instance = readProblem(problem);
+    */
+    struct Instance * instance = readProblem(argv[1]);
     unsigned * solution = nearestNeighbour(instance);
     /*
     solution = gen(solution, 30, 0.015, 5, 1, 10, instance);
